@@ -21,8 +21,8 @@ public:
     HRESULT Hook();
 
     // Captures some frames.
-    HRESULT CaptureFrames(HWND windowHandleToCapture,
-        std::wstring_view folderToSaveFrames, int maxFrames);
+    //HRESULT CaptureFrames(HWND windowHandleToCapture,
+    //    std::wstring_view folderToSaveFrames, int maxFrames);
 
 private:
     D3D11PresentHook();

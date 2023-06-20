@@ -34,7 +34,8 @@ Build
   .\vcpkg\vcpkg --triplet x64-windows-static install polyhook2:x64-windows
   ```
 
-* Select `ISO C++17 standard` in the "properties" of `reflective_dll`
+* Select `ISO C++17 standard` in the properties of `reflective_dll`
+* Add `D3D11.lib` in the additional dependencies in the "input" of "Linker" in the properties of `reflective_dll`
 * Open the 'rdi.sln' file in Visual Studio C++ and build the solution in Release mode to make inject.exe and reflective_dll.dll
 
 Usage
