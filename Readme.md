@@ -25,7 +25,17 @@ Assuming we have code execution in the host process and the library we wish to i
 Build
 =====
 
-Open the 'rdi.sln' file in Visual Studio C++ and build the solution in Release mode to make inject.exe and reflective_dll.dll
+* Install PolyHook2
+
+  ```powershell
+  git clone https://github.com/microsoft/vcpkg
+  call .\vcpkg\bootstrap-vcpkg.bat
+  .\vcpkg\vcpkg --triplet x64-windows-static integrate install
+  .\vcpkg\vcpkg --triplet x64-windows-static install polyhook2:x64-windows
+  ```
+
+* Select `ISO C++17 standard` in the "properties" of `reflective_dll`
+* Open the 'rdi.sln' file in Visual Studio C++ and build the solution in Release mode to make inject.exe and reflective_dll.dll
 
 Usage
 =====
@@ -33,7 +43,7 @@ Usage
 To test use the inject.exe to inject reflective_dll.dll into a host process via a process id, e.g.:
 
 > inject.exe 1234
-	
+
 License
 =======
 
