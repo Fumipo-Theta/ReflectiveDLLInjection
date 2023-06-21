@@ -1,7 +1,6 @@
 //===============================================================================================//
 // This is a stub for the actuall functionality of the DLL.
 //===============================================================================================//
-//#include "ReflectiveLoader.h"
 #include "hook.h"
 #include "base-window.h"
 #include "d3d11-base-helper.h"
@@ -124,7 +123,11 @@ HRESULT D3D11PresentHook::Hook() {
 
 	std::cout << "Start hooking" << std::endl;
 	MH_Initialize();
-	MH_CreateHook(&presentPointer_, &presentCallback, reinterpret_cast<LPVOID*>(&presentTrampoline_));
+	MH_STATUS res = MH_CreateHook(&presentPointer_, &presentCallback, reinterpret_cast<LPVOID*>(&presentTrampoline_));
+	if (res != MH_OK) {
+		std::cout << "Hooking failed with status " << res << std::endl;
+		return S_FALSE;
+	}
 	MH_EnableHook(&presentPointer_);
 	std::cout << "Done hooking" << std::endl;
 
@@ -157,15 +160,19 @@ HRESULT D3D11PresentHook::SwapChainPresentWrapper(IDXGISwapChain* swapChain, UIN
 DWORD  WINAPI run_thread(LPVOID param) {
 	if constexpr (c_strcmp(BUILD_CONFIG, "RelWithDebInfo") == 0) {
 		AllocConsole();
-		SetConsoleTitle("Sekiro Practice Tool DLL by johndisandonato");
+		SetConsoleTitle("Reflective DLL Injection");
 		freopen("CONOUT$", "w", stdout);
 		freopen("CONOUT$", "w", stderr);
 		freopen("CONIN$", "r", stdin);
 	}
-	MessageBoxA(NULL, "Dll injecting...", "Reflective Dll Injection", MB_OK);
+	std::cout << "Dll injecting..." << std::endl;
 	HRESULT hr;
 	hr = D3D11PresentHook::Get()->Hook();
-	MessageBoxA(NULL, "Dll injected!", "Reflective Dll Injection", MB_OK);
+	if (hr != S_OK) {
+		std::cout << "Dll injection failed!" << std::endl;
+		return 1;
+	}
+	std::cout << "Dll injection succeeded!" << std::endl;
 	return 0;
 }
 
@@ -174,13 +181,7 @@ BOOL WINAPI DllMain( HINSTANCE hinstDLL, DWORD dwReason, LPVOID lpReserved )
     BOOL bReturnValue = TRUE;
 	switch( dwReason ) 
     { 
-		//case DLL_QUERY_HMODULE:
-		//	if( lpReserved != NULL )
-		//		*(HMODULE *)lpReserved = hAppInstance;
-		//	break;
 		case DLL_PROCESS_ATTACH:
-		//	hAppInstance = hinstDLL;
-			MessageBoxA( NULL, "Hello from DllMain!", "Reflective Dll Injection", MB_OK );
 			DWORD tmp;
 			CreateThread(NULL, 0, run_thread, NULL, 0, &tmp);
 			break;
